@@ -1,4 +1,4 @@
-name := "statistics"
+name := "telemetry-reports"
 
 val AkkaVersion = "2.6.9"
 
