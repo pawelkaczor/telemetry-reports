@@ -21,7 +21,7 @@ object HumidityReportApp extends App {
 
   println("Num of processed files: " + report.filesProcessed)
   println("Num of processed measurements: " + report.measurementsProcessed)
-  println("Num of failed measurements: " + report.measurementsProcessed)
+  println("Num of failed measurements: " + report.measurementsFailed)
   println("")
   println("Sensors with highest avg humidity:")
   println("sensor-id,min,avg,max")
