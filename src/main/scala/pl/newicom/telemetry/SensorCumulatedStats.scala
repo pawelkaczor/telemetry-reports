@@ -1,13 +1,19 @@
 package pl.newicom.telemetry
 
+object SensorCumulatedStats {
+  def apply(hum: Option[Int]): SensorCumulatedStats =
+    hum match {
+      case Some(value) =>
+        NonEmptySensorCumulatedStats(1, value, value, value)
+      case None =>
+        EmptySensorCumulatedStats
+    }
+}
 sealed trait SensorCumulatedStats {
   def merge(other: SensorCumulatedStats): SensorCumulatedStats
-  def withSuccessfulMeasurement(humidity: Int): SensorCumulatedStats
 }
 
 case object EmptySensorCumulatedStats extends SensorCumulatedStats {
-  def withSuccessfulMeasurement(hum: Int): SensorCumulatedStats =
-    NonEmptySensorCumulatedStats(1, cumulated = hum, min = hum, max = hum)
 
   def merge(other: SensorCumulatedStats): SensorCumulatedStats =
     other match {
@@ -20,9 +26,6 @@ case class NonEmptySensorCumulatedStats(mSuccessful: Int, cumulated: Long, min: 
 
   def avg: BigDecimal =
     BigDecimal(cumulated) / mSuccessful
-
-  def withSuccessfulMeasurement(hum: Int): NonEmptySensorCumulatedStats =
-    NonEmptySensorCumulatedStats(mSuccessful + 1, cumulated + hum, Math.min(min, hum), Math.max(max, hum))
 
   def merge(other: SensorCumulatedStats): SensorCumulatedStats =
     other match {

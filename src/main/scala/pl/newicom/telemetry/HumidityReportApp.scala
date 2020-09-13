@@ -25,6 +25,7 @@ object HumidityReportApp extends App {
   println("")
   println("Sensors with highest avg humidity:")
   println("sensor-id,min,avg,max")
+
   report.sensorStatsSortedByAvg
     .map {
       case (sensorId, Some(stat)) =>
@@ -34,4 +35,6 @@ object HumidityReportApp extends App {
         s"$sensorId,NaN,NaN,NaN"
     }
     .foreach(println)
+
+  system.terminate()
 }
