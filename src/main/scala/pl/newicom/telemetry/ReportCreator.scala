@@ -17,7 +17,7 @@ object ReportCreator {
     Future
       .sequence {
         dailyReportSources(directory)
-          .map(_.scan(repBuilder)(_.withMeasurement(_)))
+          .map(_.fold(repBuilder)((b, m) => { b.withMeasurement(m) }))
           .map(_.toMat(Sink.seq)(Keep.right))
           .map(_.run())
       }
