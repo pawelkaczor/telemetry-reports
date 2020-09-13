@@ -17,7 +17,7 @@ object HumidityReportApp extends App {
   implicit val system: ActorSystem  = ActorSystem("telemetry", ConfigFactory.load())
   implicit val ec: ExecutionContext = system.dispatcher
 
-  val report: HumidityReport = Await.result(HumidityReportCreator.createHumidityReport(new File(args(0))), 1.day)
+  val report: HumidityReport = Await.result(ReportCreator.createHumidityReport(new File(args(0))), 1.day)
 
   println("Num of processed files: " + report.filesProcessed)
   println("Num of processed measurements: " + report.measurementsProcessed)

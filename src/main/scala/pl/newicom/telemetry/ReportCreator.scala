@@ -8,7 +8,7 @@ import pl.newicom.telemetry.DailyReportImport.dailyReportSource
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object HumidityReportCreator {
+object ReportCreator {
 
   def createHumidityReport(directory: File)(implicit m: Materializer, ec: ExecutionContext): Future[HumidityReport] = {
     val nrOfDailyReports = directory.listFiles().length
