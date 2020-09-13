@@ -16,7 +16,7 @@ case class HumidityReport(
       } else if (s2._2.isEmpty) {
         true
       } else {
-        s1._2.get.avg.compareTo(s2._2.get.avg) < 0
+        s1._2.get.avg.compareTo(s2._2.get.avg) > 0
       }
     })
 

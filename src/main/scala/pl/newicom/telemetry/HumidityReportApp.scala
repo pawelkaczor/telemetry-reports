@@ -7,6 +7,7 @@ import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext}
+import scala.math.BigDecimal.RoundingMode
 
 object HumidityReportApp extends App {
   if (args.length == 0) {
@@ -18,5 +19,19 @@ object HumidityReportApp extends App {
 
   val report: HumidityReport = Await.result(HumidityReportCreator.createHumidityReport(new File(args(0))), 1.day)
 
-  println(report)
+  println("Num of processed files: " + report.filesProcessed)
+  println("Num of processed measurements: " + report.measurementsProcessed)
+  println("Num of failed measurements: " + report.measurementsProcessed)
+  println("")
+  println("Sensors with highest avg humidity:")
+  println("sensor-id,min,avg,max")
+  report.sensorStatsSortedByAvg
+    .map {
+      case (sensorId, Some(stat)) =>
+        val avgDisplayed = stat.avg.setScale(2, RoundingMode.HALF_UP).toString()
+        s"$sensorId,${stat.min},$avgDisplayed,${stat.max}"
+      case (sensorId, None) =>
+        s"$sensorId,NaN,NaN,NaN"
+    }
+    .foreach(println)
 }
