@@ -4,6 +4,7 @@ import java.io.File
 
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
+import pl.newicom.telemetry.zio.ReportCreator
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext}

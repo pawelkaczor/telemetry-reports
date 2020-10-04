@@ -1,10 +1,12 @@
-package pl.newicom.telemetry
+package pl.newicom.telemetry.zio
 
 import java.io.File
 
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Keep, Sink}
 import pl.newicom.telemetry.DailyReportImport.dailyReportSource
+import pl.newicom.telemetry.HumidityReport
+import zio.prelude.AssociativeOps
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,7 +14,7 @@ object ReportCreator {
 
   def createHumidityReport(directory: File)(implicit m: Materializer, ec: ExecutionContext): Future[HumidityReport] = {
     val nrOfDailyReports = directory.listFiles().length
-    val repBuilder       = ReportBuilder.initial(nrOfDailyReports)
+    val repBuilder       = HumidityPartialReport.initial(nrOfDailyReports)
 
     Future
       .sequence {
@@ -22,7 +24,7 @@ object ReportCreator {
           .map(_.run())
       }
       .map(_.flatten)
-      .map(_.reduce(_.merge(_)))
+      .map(_.reduce(_.<>(_)))
       .map(_.buildReport)
   }
 
