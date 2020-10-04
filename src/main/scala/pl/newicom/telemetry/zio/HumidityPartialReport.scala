@@ -27,8 +27,7 @@ case class HumidityPartialReport(
 ) {
 
   def withMeasurement(m: Measurement): HumidityPartialReport = {
-    val newStat = statsBySensor
-      .getOrElse(m.sensorId, SensorCumulatedStats(m.humidity))
+    val newStat = statsBySensor.getOrElse(m.sensorId, SensorCumulatedStats.empty) <> SensorCumulatedStats(m.humidity)
 
     val newStatsBySensor = statsBySensor + (m.sensorId -> newStat)
     val newNrOfFailed    = mFailed <> Sum(if (m.isFailed) 1 else 0)

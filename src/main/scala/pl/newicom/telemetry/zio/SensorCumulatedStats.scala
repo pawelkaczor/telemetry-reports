@@ -4,14 +4,14 @@ import zio.prelude.newtypes.{Max, Min, Sum}
 import zio.prelude.{AssociativeOps, Identity}
 
 object SensorCumulatedStats {
-  val empty: SensorCumulatedStats = SensorCumulatedStats(Sum(0), Sum(0), Min(Int.MinValue), Max(Int.MaxValue))
+  val empty: SensorCumulatedStats = SensorCumulatedStats(Sum(0), Sum(0), Min(Int.MaxValue), Max(Int.MinValue))
 
   def apply(hum: Option[Int]): SensorCumulatedStats =
     hum match {
       case Some(value) =>
         SensorCumulatedStats(Sum(1), Sum(value), Min(value), Max(value))
       case None =>
-        associative.identity
+        empty
     }
 
   implicit val associative: Identity[SensorCumulatedStats] = new Identity[SensorCumulatedStats] {
