@@ -6,23 +6,18 @@ import zio.prelude.{AssociativeOps, Identity}
 
 object HumidityPartialReport {
   implicit val associative: Identity[HumidityPartialReport] = new Identity[HumidityPartialReport] {
-    def identity: HumidityPartialReport = HumidityPartialReport(Sum(0), Sum(0), Sum(0), Map.empty)
+    def identity: HumidityPartialReport = empty
 
-    def combine(l: => HumidityPartialReport, r: => HumidityPartialReport): HumidityPartialReport = HumidityPartialReport(
-      l.fProcessed <> r.fProcessed,
-      l.mProcessed <> r.mProcessed,
-      l.mFailed <> r.mFailed,
-      l.statsBySensor <> r.statsBySensor
-    )
+    def combine(l: => HumidityPartialReport, r: => HumidityPartialReport): HumidityPartialReport =
+      HumidityPartialReport(l.mProcessed <> r.mProcessed, l.mFailed <> r.mFailed, l.statsBySensor <> r.statsBySensor)
   }
 
-  def initial(nrOfFiles: Int): HumidityPartialReport = associative.identity.copy(fProcessed = Sum(nrOfFiles))
+  def empty: HumidityPartialReport = HumidityPartialReport(Sum(0), Sum(0), Map.empty)
 
 }
 case class HumidityPartialReport(
-  fProcessed: Sum[Int],
-  mProcessed: Sum[Int],
-  mFailed: Sum[Int],
+  mProcessed: Sum[Int], // number of processed measurements
+  mFailed: Sum[Int],    // number of failed measurements
   statsBySensor: Map[String, SensorCumulatedStats]
 ) {
 
@@ -35,7 +30,7 @@ case class HumidityPartialReport(
     copy(mProcessed = mProcessed <> Sum(1), mFailed = newNrOfFailed, statsBySensor = newStatsBySensor)
   }
 
-  def buildReport: HumidityReport = {
+  def buildReport(nrOfFiles: Int): HumidityReport = {
     val sensorReports = statsBySensor.map {
       case (sensorId, SensorCumulatedStats.empty) =>
         (sensorId, None)
@@ -43,7 +38,7 @@ case class HumidityPartialReport(
         (sensorId, Some(SensorStats(sensorId, stat.min, stat.max, stat.avg)))
     }
 
-    HumidityReport(fProcessed, mProcessed, mFailed, sensorReports)
+    HumidityReport(nrOfFiles, mProcessed, mFailed, sensorReports)
   }
 
 }

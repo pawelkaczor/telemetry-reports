@@ -14,18 +14,16 @@ object ReportCreator {
 
   def createHumidityReport(directory: File)(implicit m: Materializer, ec: ExecutionContext): Future[HumidityReport] = {
     val nrOfDailyReports = directory.listFiles().length
-    val repBuilder       = HumidityPartialReport.initial(nrOfDailyReports)
-
     Future
       .sequence {
         dailyReportSources(directory)
-          .map(_.fold(repBuilder)(_.withMeasurement(_)))
+          .map(_.fold(HumidityPartialReport.empty)(_.withMeasurement(_)))
           .map(_.toMat(Sink.seq)(Keep.right))
           .map(_.run())
       }
       .map(_.flatten)
       .map(_.reduce(_.<>(_)))
-      .map(_.buildReport)
+      .map(_.buildReport(nrOfDailyReports))
   }
 
   private def dailyReportSources(directory: File) = {
