@@ -19,7 +19,7 @@ class HumidityReportService {
       dailyReportStreams(directory)
         .map(_.fold(HumidityPartialReport.empty)(_.withMeasurement(_)))
     )(_ <> _)
-      .map(_.buildReport(nrOfDailyReports))
+      .map(_.finalReport(nrOfDailyReports))
   }
 
   private def dailyReportStreams(directory: File): Seq[ZStream[Any, Throwable, Measurement]] = {

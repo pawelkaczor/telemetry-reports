@@ -30,7 +30,7 @@ case class HumidityPartialReport(
     copy(mProcessed = mProcessed <> Sum(1), mFailed = newNrOfFailed, statsBySensor = newStatsBySensor)
   }
 
-  def buildReport(nrOfFiles: Int): HumidityReport = {
+  def finalReport(nrOfFiles: Int): HumidityReport = {
     val sensorReports = statsBySensor.map {
       case (sensorId, SensorCumulatedStats.empty) =>
         (sensorId, None)
