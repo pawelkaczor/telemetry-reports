@@ -1,7 +1,7 @@
-package pl.newicom.telemetry.zio
+package pl.newicom.telemetry
 
-import zio.prelude.newtypes.{Max, Min, Sum}
-import zio.prelude.{AssociativeOps, Identity}
+import _root_.zio.prelude.Identity
+import _root_.zio.prelude.newtypes._
 
 object SensorCumulatedStats {
   val empty: SensorCumulatedStats = SensorCumulatedStats(Sum(0), Sum(0), Min(Int.MaxValue), Max(Int.MinValue))

@@ -1,8 +1,6 @@
-package pl.newicom.telemetry.zio
-
-import pl.newicom.telemetry.{HumidityReport, Measurement, SensorStats}
-import zio.prelude.newtypes.Sum
-import zio.prelude.{AssociativeOps, Identity}
+package pl.newicom.telemetry
+import _root_.zio.prelude._
+import _root_.zio.prelude.newtypes._
 
 object HumidityPartialReport {
   implicit val associative: Identity[HumidityPartialReport] = new Identity[HumidityPartialReport] {
