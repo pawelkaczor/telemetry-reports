@@ -16,7 +16,7 @@ import zio.stream._
 object MeasurementsProvider {
   type MeasurementsProvider[S <: MeasurementsSource] = Has[MeasurementsProvider.Service[S]]
 
-  val akkaCvsFiles: URLayer[AkkaIO, MeasurementsProvider[MeasurementsSource]] = ZLayer.fromService((as: ActorSystem) =>
+  val akkaCvsFiles: URLayer[AkkaIO, MeasurementsProvider[CvsFiles]] = ZLayer.fromService((as: ActorSystem) =>
     new Service[CvsFiles] {
       implicit val system: ActorSystem = as
 
@@ -29,7 +29,7 @@ object MeasurementsProvider {
           .mapMaterializedValue(_ => notUsed())
           .runWith(Sink.asPublisher(fanout = false))
           .toStream()
-    }.asInstanceOf[Service[MeasurementsSource]]
+    }
   )
 
   trait Service[S <: MeasurementsSource] {

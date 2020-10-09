@@ -7,24 +7,21 @@ import zio._
 import zio.prelude.AssociativeOps
 
 object Reporting {
-  type Reporting = Has[Reporting.Service]
+  type Reporting[S <: MeasurementsSource] = Has[Reporting.Service[S]]
 
-  val live: URLayer[MeasurementsProvider[MeasurementsSource], Reporting] = ZLayer.fromService(mp =>
-    new Service {
-      def humidityReport(sources: Seq[MeasurementsSource]): ZIO[Any, Throwable, HumidityReport] = {
-        val nrOfDailyReports = sources.size
+  def live[S <: MeasurementsSource: Tag]: URLayer[MeasurementsProvider[S], Reporting[S]] =
+    ZLayer.fromService(provider =>
+      (sources: Seq[S]) => {
         reduceAll(
           succeed(HumidityPartialReport.empty),
           sources
-            .map(s => mp.measurementStream(s))
+            .map(provider.measurementStream)
             .map(_.fold(HumidityPartialReport.empty)(_.withMeasurement(_)))
-        )(_ combine _)
-          .map(_.finalReport(nrOfDailyReports))
+        )(_ combine _).map(_.finalReport(sources.size))
       }
-    }
-  )
+    )
 
-  trait Service {
-    def humidityReport(sources: Seq[MeasurementsSource]): ZIO[Any, Throwable, HumidityReport]
+  trait Service[S <: MeasurementsSource] {
+    def humidityReport(sources: Seq[S]): ZIO[Any, Throwable, HumidityReport]
   }
 }
