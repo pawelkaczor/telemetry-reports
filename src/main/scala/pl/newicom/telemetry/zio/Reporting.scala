@@ -1,38 +1,30 @@
 package pl.newicom.telemetry.zio
 
-import java.io.File
-
-import pl.newicom.telemetry.zio.MeasurementIO.MeasurementIO
-import pl.newicom.telemetry.{HumidityPartialReport, HumidityReport, Measurement}
+import pl.newicom.telemetry.zio.MeasurementsProvider.MeasurementsProvider
+import pl.newicom.telemetry.{HumidityPartialReport, HumidityReport, MeasurementsSource}
 import zio.ZIO.{reduceAll, succeed}
 import zio._
-import zio.interop.reactivestreams._
 import zio.prelude.AssociativeOps
-import zio.stream._
 
 object Reporting {
   type Reporting = Has[Reporting.Service]
 
-  val live: URLayer[MeasurementIO, Reporting] = ZLayer.fromService(mIo =>
+  val live: URLayer[MeasurementsProvider[MeasurementsSource], Reporting] = ZLayer.fromService(mp =>
     new Service {
-
-      def humidityReport(directory: File): ZIO[Any, Throwable, HumidityReport] = {
-        val nrOfDailyReports = directory.listFiles().length
+      def humidityReport(sources: Seq[MeasurementsSource]): ZIO[Any, Throwable, HumidityReport] = {
+        val nrOfDailyReports = sources.size
         reduceAll(
           succeed(HumidityPartialReport.empty),
-          dailyReportStreams(directory)
+          sources
+            .map(s => mp.measurementStream(s))
             .map(_.fold(HumidityPartialReport.empty)(_.withMeasurement(_)))
-        )(_ <> _)
+        )(_ combine _)
           .map(_.finalReport(nrOfDailyReports))
-      }
-
-      private def dailyReportStreams(directory: File): Seq[ZStream[Any, Throwable, Measurement]] = {
-        directory.listFiles().toSeq.map(f => mIo.fromFilePublisher(f).toStream())
       }
     }
   )
 
   trait Service {
-    def humidityReport(directory: File): ZIO[Any, Throwable, HumidityReport]
+    def humidityReport(sources: Seq[MeasurementsSource]): ZIO[Any, Throwable, HumidityReport]
   }
 }

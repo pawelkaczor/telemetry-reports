@@ -2,6 +2,7 @@ package pl.newicom.telemetry.zio
 
 import java.io.File
 
+import pl.newicom.telemetry.CvsFiles
 import pl.newicom.telemetry.akka.AkkaIO
 import pl.newicom.telemetry.zio.Reporting.Reporting
 import zio.ZIO._
@@ -18,11 +19,13 @@ object HumidityReportApp extends zio.App {
     }
 
     val environment =
-      Console.live ++ (AkkaIO.live >>> MeasurementIO.akkaLive >>> Reporting.live)
+      Console.live ++ (AkkaIO.live >>> MeasurementsProvider.akkaCvsFiles >>> Reporting.live)
+
+    def sources: Seq[CvsFiles] = new File(args.head).listFiles().toSeq.map(f => CvsFiles(f.toURI))
 
     val program = for {
       reporting <- ZIO.environment[Reporting]
-      report    <- reporting.get.humidityReport(new File(args.head))
+      report    <- reporting.get.humidityReport(sources)
       _         <- putStrLn("Num of processed files: " + report.filesProcessed)
       _         <- putStrLn("Num of processed measurements: " + report.measurementsProcessed)
       _         <- putStrLn("Num of failed measurements: " + report.measurementsFailed)
