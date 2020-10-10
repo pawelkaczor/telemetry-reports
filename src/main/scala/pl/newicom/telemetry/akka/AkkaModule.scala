@@ -4,10 +4,10 @@ import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import zio.{Has, TaskLayer, ZLayer}
 
-object AkkaIO {
-  type AkkaIO = Has[ActorSystem]
+object AkkaModule {
+  type AkkaModule = Has[ActorSystem]
 
-  val live: TaskLayer[AkkaIO] =
+  val live: TaskLayer[AkkaModule] =
     ZLayer.succeed(ActorSystem("telemetry", ConfigFactory.load()))
 
   trait Service {

@@ -7,7 +7,7 @@ import akka.NotUsed.notUsed
 import akka.actor.ActorSystem
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
 import akka.stream.scaladsl.{FileIO, Sink}
-import pl.newicom.telemetry.akka.AkkaIO.AkkaIO
+import pl.newicom.telemetry.akka.AkkaModule.AkkaModule
 import pl.newicom.telemetry.{Measurement, MeasurementsSource, CvsFiles}
 import zio._
 import zio.interop.reactivestreams._
@@ -16,7 +16,7 @@ import zio.stream._
 object MeasurementsProvider {
   type MeasurementsProvider[S <: MeasurementsSource] = Has[MeasurementsProvider.Service[S]]
 
-  val akkaCvsFiles: URLayer[AkkaIO, MeasurementsProvider[CvsFiles]] = ZLayer.fromService((as: ActorSystem) =>
+  val akkaCvsFiles: URLayer[AkkaModule, MeasurementsProvider[CvsFiles]] = ZLayer.fromService((as: ActorSystem) =>
     new Service[CvsFiles] {
       implicit val system: ActorSystem = as
 
