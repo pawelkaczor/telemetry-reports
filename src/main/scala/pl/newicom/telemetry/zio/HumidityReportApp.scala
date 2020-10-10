@@ -26,7 +26,7 @@ object HumidityReportApp extends zio.App {
     val program = for {
       reporting <- ZIO.environment[Reporting[CvsFiles]]
       report    <- reporting.get.humidityReport(sources)
-      _         <- putStrLn("Num of processed files: " + report.filesProcessed)
+      _         <- putStrLn("Num of processed files: " + report.sourcesProcessed)
       _         <- putStrLn("Num of processed measurements: " + report.measurementsProcessed)
       _         <- putStrLn("Num of failed measurements: " + report.measurementsFailed)
       _         <- putStrLn("")

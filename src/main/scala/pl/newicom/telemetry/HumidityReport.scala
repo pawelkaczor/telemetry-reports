@@ -1,7 +1,7 @@
 package pl.newicom.telemetry
 
 case class HumidityReport(
-  filesProcessed: Int,
+  sourcesProcessed: Int,
   measurementsProcessed: Int,
   measurementsFailed: Int,
   statsBySensor: Map[String, Option[SensorStats]]
