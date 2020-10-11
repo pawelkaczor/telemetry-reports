@@ -1,7 +1,8 @@
-package pl.newicom.telemetry
+package pl.newicom.telemetry.reporting
 
 import org.fusesource.scalate.{TemplateEngine, TemplateSource}
 import pl.newicom.telemetry.Measurement.NaN
+import pl.newicom.telemetry.SensorStats
 
 import scala.math.BigDecimal.RoundingMode
 

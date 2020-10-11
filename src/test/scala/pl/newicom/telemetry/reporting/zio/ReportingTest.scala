@@ -1,11 +1,12 @@
-package pl.newicom.telemetry.zio
+package pl.newicom.telemetry.reporting.zio
 
-import pl.newicom.telemetry.zio.MeasurementsProvider.MeasurementsProvider
-import pl.newicom.telemetry.zio.Reporting.Service
-import pl.newicom.telemetry.{HumidityReport, Measurement, MeasurementList, SensorStats}
+import pl.newicom.telemetry.reporting.HumidityReport
+import pl.newicom.telemetry.reporting.zio.MeasurementsProvider.MeasurementsProvider
+import pl.newicom.telemetry.reporting.zio.Reporting.Service
+import pl.newicom.telemetry.{Measurement, MeasurementList, SensorStats}
 import zio.stream.ZStream
-import zio.test.Assertion._
-import zio.test._
+import zio.test.Assertion.equalTo
+import zio.test.{DefaultRunnableSpec, assert, suite, testM}
 import zio.{ULayer, ZIO, ZLayer}
 
 object ReportingTest extends DefaultRunnableSpec {

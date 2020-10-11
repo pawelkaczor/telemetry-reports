@@ -1,4 +1,4 @@
-package pl.newicom.telemetry.zio
+package pl.newicom.telemetry.reporting.zio
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
@@ -8,10 +8,10 @@ import akka.actor.ActorSystem
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
 import akka.stream.scaladsl.{FileIO, Sink}
 import pl.newicom.telemetry.akka.AkkaModule.AkkaModule
-import pl.newicom.telemetry.{Measurement, MeasurementsSource, CvsFiles}
-import zio._
-import zio.interop.reactivestreams._
-import zio.stream._
+import pl.newicom.telemetry.{CvsFiles, Measurement, MeasurementsSource}
+import zio.interop.reactivestreams.publisherToStream
+import zio.stream.ZStream
+import zio.{Has, URLayer, ZLayer}
 
 object MeasurementsProvider {
   type MeasurementsProvider[S <: MeasurementsSource] = Has[MeasurementsProvider.Service[S]]

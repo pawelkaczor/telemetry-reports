@@ -1,4 +1,4 @@
-package pl.newicom.telemetry
+package pl.newicom.telemetry.reporting
 
 import java.util.UUID
 
@@ -6,6 +6,7 @@ import org.scalacheck.Gen
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pl.newicom.telemetry.SensorStats
 
 class HumidityReportTest extends AnyWordSpecLike with Matchers with ScalaCheckPropertyChecks {
 

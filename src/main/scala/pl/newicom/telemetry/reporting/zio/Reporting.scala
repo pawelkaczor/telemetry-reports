@@ -1,7 +1,8 @@
-package pl.newicom.telemetry.zio
+package pl.newicom.telemetry.reporting.zio
 
-import pl.newicom.telemetry.zio.MeasurementsProvider.MeasurementsProvider
-import pl.newicom.telemetry.{HumidityPartialReport, HumidityReport, MeasurementsSource}
+import pl.newicom.telemetry.MeasurementsSource
+import pl.newicom.telemetry.reporting.zio.MeasurementsProvider.MeasurementsProvider
+import pl.newicom.telemetry.reporting.{HumidityPartialReport, HumidityReport}
 import zio.ZIO.{reduceAll, succeed}
 import zio._
 import zio.prelude.AssociativeOps
