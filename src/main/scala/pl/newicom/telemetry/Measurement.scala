@@ -9,7 +9,7 @@ object Measurement {
     Measurement(
       csvRecord(SensorId),
       Some(csvRecord(Humidity)).flatMap {
-        case "NaN" => None
+        case NaN   => None
         case value => Some(Integer.valueOf(value))
       }
     )
