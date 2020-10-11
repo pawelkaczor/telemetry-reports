@@ -1,4 +1,4 @@
-package pl.newicom.telemetry.reporting.zio
+package pl.newicom.telemetry.reporting.zio.app
 
 import java.io.File
 
@@ -6,6 +6,7 @@ import pl.newicom.telemetry.CvsFiles
 import pl.newicom.telemetry.akka.AkkaModule
 import pl.newicom.telemetry.reporting.HumidityReport
 import pl.newicom.telemetry.reporting.zio.Reporting.Reporting
+import pl.newicom.telemetry.reporting.zio.{MeasurementsProvider, Reporting}
 import zio.console.{Console, putStrLn}
 import zio.{ExitCode, URIO, ZIO}
 
