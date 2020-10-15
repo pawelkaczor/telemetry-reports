@@ -16,10 +16,14 @@ libraryDependencies ++= Seq(
   "dev.zio"              %% "zio-prelude"                 % "latest.integration",
   "dev.zio"              %% "zio-interop-reactivestreams" % "1.0.3.5",
   "org.scalatra.scalate" %% "scalate-core"                % "1.9.6",
-  "org.scalatest"        %% "scalatest"                   % "3.2.2"   % "test",
-  "org.scalatestplus"    %% "scalacheck-1-14"             % "3.2.2.0" % "test",
+  "org.scalatest"        %% "scalatest"                   % "3.2.2"    % "test",
+  "org.scalatestplus"    %% "scalacheck-1-14"             % "3.2.2.0"  % "test",
+  "dev.zio"              %% "zio-test"                    % ZioVersion % "test",
+  "dev.zio"              %% "zio-test-sbt"                % ZioVersion % "test",
   "ch.qos.logback"        % "logback-classic"             % "1.2.3"
 )
+
+testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
 resolvers +=
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
