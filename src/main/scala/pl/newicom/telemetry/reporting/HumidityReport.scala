@@ -39,11 +39,8 @@ object HumidityReport {
             .map(sensorStatsRow)
             .map(r => align(r.toMap))
         }
-      ) ++ align(Map("h_sensor-id" -> "Sensor", "h_min" -> "Min", "h_max" -> "Max", "h_avg" -> "Avg"))
+      ) ++ align(fields.map("h_" + _).zipAll(Seq("Sensor", "Min", "Avg", "Max"), "", "").toMap)
     )
-
-  def align(map: Map[String, String]): Map[String, String] =
-    map.view.mapValues(_.padTo(columnWidth, " ").mkString("")).toMap
 
   private def sensorStatsRow: Function[(String, Option[SensorStats]), SensorStatsRow] = {
     case (sensorId, Some(stat)) =>
@@ -51,6 +48,9 @@ object HumidityReport {
       SensorStatsRow(sensorId, stat.min.toString, stat.max.toString, avgDisplayed)
     case (sensorId, None) => SensorStatsRow(sensorId, NaN, NaN, NaN)
   }
+
+  private def align(map: Map[String, String]) =
+    map.view.mapValues(_.padTo(columnWidth, " ").mkString("")).toMap
 }
 
 case class HumidityReport(
