@@ -15,6 +15,7 @@ object HumidityReport {
       |Num of failed measurements:  {{measurementsFailed}}
       |
       |Sensors with highest avg humidity:
+      |
       |sensor-id, min, avg, max
       |{{#sensorStats}}
       |{{sensorId}}, {{min}}, {{avg}}, {{max}}

@@ -9,13 +9,13 @@ import pl.newicom.telemetry.reporting.zio.Aspect.AspectSyntax
 import pl.newicom.telemetry.reporting.zio.Reporting.Reporting
 import pl.newicom.telemetry.reporting.zio.ReportingLogger.logging
 import pl.newicom.telemetry.reporting.zio.{MeasurementsProvider, Reporting}
-import zio.ZIO
 import zio.console.putStrLn
 import zio.logging._
+import zio.{ExitCode, URIO, ZEnv, ZIO}
 
 object HumidityReportApp extends zio.App {
 
-  def run(args: List[String]) = {
+  def run(args: List[String]): URIO[ZEnv, ExitCode] = {
     if (args.isEmpty) {
       throw new IllegalArgumentException("path to csv directory is missing")
     }
@@ -31,8 +31,8 @@ object HumidityReportApp extends zio.App {
       .map(f => CsvFiles(f.toURI))
 
     val program = for {
-      reporting <- ZIO.environment[Reporting[CsvFiles]]
-      report    <- reporting.get.humidityReport(sources) @@ logging[CsvFiles]
+      reporting <- ZIO.environment[Reporting[CsvFiles]] @@ logging[CsvFiles]
+      report    <- reporting.get.humidityReport(sources)
       _         <- putStrLn(HumidityReport.render(report))
     } yield {}
 

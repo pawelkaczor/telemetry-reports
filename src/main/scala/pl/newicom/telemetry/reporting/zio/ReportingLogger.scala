@@ -13,7 +13,6 @@ object ReportingLogger {
         zio.updateService[Reporting.Service[S]] { reporting => (sources: Seq[S]) =>
           reporting
             .humidityReport(sources)
-            // TODO does not work (the message is not logged)
             .tap(_ => logging.get.info("Humidity report created"))
         }
       }
