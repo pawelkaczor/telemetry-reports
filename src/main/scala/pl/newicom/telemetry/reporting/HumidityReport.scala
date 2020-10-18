@@ -13,9 +13,9 @@ object HumidityReport {
   val columnWidth    = 12
   val template: String =
     s"""
-      |Num of processed files: {{sourcesProcessed}}
-      |Num of processed measurements: {{measurementsProcessed}}
-      |Num of failed measurements:  {{measurementsFailed}}
+      |Number of processed files:        {{sourcesProcessed}}
+      |Number of processed measurements: {{measurementsProcessed}}
+      |Number of failed measurements:    {{measurementsFailed}}
       |
       |Sensors with highest avg humidity:
       |-------------------------------------------------------------
