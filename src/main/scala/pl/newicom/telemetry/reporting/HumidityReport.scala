@@ -3,23 +3,28 @@ package pl.newicom.telemetry.reporting
 import org.fusesource.scalate.{TemplateEngine, TemplateSource}
 import pl.newicom.telemetry.Measurement.NaN
 import pl.newicom.telemetry.SensorStats
+import pl.newicom.telemetry.reporting.HumidityReport.fields
 
 import scala.math.BigDecimal.RoundingMode
 
 object HumidityReport {
   val templateEngine = new TemplateEngine()
+  val fields         = Seq("sensor-id", "min", "avg", "max")
+  val columnWidth    = 12
   val template: String =
-    """
+    s"""
       |Num of processed files: {{sourcesProcessed}}
       |Num of processed measurements: {{measurementsProcessed}}
       |Num of failed measurements:  {{measurementsFailed}}
       |
       |Sensors with highest avg humidity:
-      |
-      |sensor-id, min, avg, max
+      |-------------------------------------------------------------
+      |${fields.map(f => "{{h_" + f + "}}").mkString(" ")}
+      |-------------------------------------------------------------
       |{{#sensorStats}}
-      |{{sensorId}}, {{min}}, {{avg}}, {{max}}
+      |${fields.map(f => "{{" + f + "}}").mkString(" ")}
       |{{/sensorStats}}
+      |-------------------------------------------------------------
       |""".stripMargin
 
   def render(report: HumidityReport): String =
@@ -29,11 +34,16 @@ object HumidityReport {
         "sourcesProcessed"      -> report.sourcesProcessed,
         "measurementsProcessed" -> report.measurementsProcessed,
         "measurementsFailed"    -> report.measurementsFailed,
-        "sensorStats" -> report.sensorStatsSortedByAvg
-          .map(sensorStatsRow)
-          .map(row => Map("sensorId" -> row.sensorId, "min" -> row.min, "avg" -> row.avg, "max" -> row.max))
-      )
+        "sensorStats" -> {
+          report.sensorStatsSortedByAvg
+            .map(sensorStatsRow)
+            .map(r => align(r.toMap))
+        }
+      ) ++ align(Map("h_sensor-id" -> "Sensor", "h_min" -> "Min", "h_max" -> "Max", "h_avg" -> "Avg"))
     )
+
+  def align(map: Map[String, String]): Map[String, String] =
+    map.view.mapValues(_.padTo(columnWidth, " ").mkString("")).toMap
 
   private def sensorStatsRow: Function[(String, Option[SensorStats]), SensorStatsRow] = {
     case (sensorId, Some(stat)) =>
@@ -63,4 +73,7 @@ case class HumidityReport(
 
 }
 
-case class SensorStatsRow(sensorId: String, min: String, max: String, avg: String)
+case class SensorStatsRow(sensorId: String, min: String, max: String, avg: String) {
+  def toMap: Map[String, String] =
+    fields.zipAll(Seq(sensorId, min, avg, max), "", "").toMap
+}
