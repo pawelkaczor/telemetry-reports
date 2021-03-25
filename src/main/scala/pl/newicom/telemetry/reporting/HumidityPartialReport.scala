@@ -5,11 +5,8 @@ import _root_.zio.prelude.newtypes._
 import pl.newicom.telemetry.{Measurement, SensorCumulatedStats, SensorStats}
 
 object HumidityPartialReport {
-  implicit val associative: Identity[HumidityPartialReport] = new Identity[HumidityPartialReport] {
-    def identity: HumidityPartialReport = empty
-
-    def combine(l: => HumidityPartialReport, r: => HumidityPartialReport): HumidityPartialReport =
-      HumidityPartialReport(l.mProcessed <> r.mProcessed, l.mFailed <> r.mFailed, l.statsBySensor <> r.statsBySensor)
+  implicit val associative: Associative[HumidityPartialReport] = Associative.make { (l, r) =>
+    HumidityPartialReport(l.mProcessed <> r.mProcessed, l.mFailed <> r.mFailed, l.statsBySensor <> r.statsBySensor)
   }
 
   def empty: HumidityPartialReport = HumidityPartialReport(Sum(0), Sum(0), Map.empty)

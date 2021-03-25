@@ -1,6 +1,6 @@
 package pl.newicom.telemetry
 
-import _root_.zio.prelude.Identity
+import _root_.zio.prelude.Associative
 import _root_.zio.prelude.newtypes._
 
 object SensorCumulatedStats {
@@ -14,11 +14,8 @@ object SensorCumulatedStats {
         empty
     }
 
-  implicit val associative: Identity[SensorCumulatedStats] = new Identity[SensorCumulatedStats] {
-    def identity: SensorCumulatedStats = empty
-
-    def combine(l: => SensorCumulatedStats, r: => SensorCumulatedStats): SensorCumulatedStats =
-      SensorCumulatedStats(l.mSuccessful <> r.mSuccessful, l.cumulated <> r.cumulated, l.min <> r.min, l.max <> r.max)
+  implicit val associative: Associative[SensorCumulatedStats] = Associative.make { (l, r) =>
+    SensorCumulatedStats(l.mSuccessful <> r.mSuccessful, l.cumulated <> r.cumulated, l.min <> r.min, l.max <> r.max)
   }
 
 }
